@@ -33,17 +33,7 @@
             image.src = URL.createObjectURL(event.target.files[0]);
         };
     </script>
-@if(session('success'))
-<div class="alert alert-success">
-    {{ session('success') }}
-</div>
-@endif
 
-@if(session('error'))
-<div class="alert alert-danger">
-    {{ session('error') }}
-</div>
-@endif
 <nav class="navbar navbar-expand-lg navbar-light navbar-laravel">
     <div class="container">
     {{-- <a class="navbar-brand" href="#">Laravel</a>
@@ -64,7 +54,17 @@
     </div> --}}
     </div>
 </nav>
+@if(session('success'))
+<div class="alert alert-success">
+    {{ session('success') }}
+</div>
+@endif
 
+@if(session('error'))
+<div class="alert alert-danger">
+    {{ session('error') }}
+</div>
+@endif
 <main class="my-form">
     <div class="cotainer">
         <div class="row justify-content-center">
@@ -73,19 +73,19 @@
                         <div class="card-header">Register</div>
                         <div class="card-body">
                             {{-- <form name="my-form" onsubmit="return validform()" action="{{ route('register.store') }}" method="POST" enctype="multipart/form-data"> --}}
-                            <form action="{{ route('register.store') }}" method="POST" enctype="multipart/form-data">
+                            <form onsubmit="return validform()" action="{{ route('register.store') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group row">
                                     <label for="full_name" class="col-md-4 col-form-label text-md-right">Name</label>
                                     <div class="col-md-6">
-                                        <input type="text" id="full_name" class="form-control" name="full-name">
+                                        <input type="text" id="name" class="form-control" name="name">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label for="email_address" class="col-md-4 col-form-label text-md-right">Email</label>
                                     <div class="col-md-6">
-                                        <input type="text" id="email_address" class="form-control" name="email-address">
+                                        <input type="text" id="email_address" class="form-control" name="email">
                                     </div>
                                 </div>
 
@@ -97,16 +97,16 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label for="phone_number" class="col-md-4 col-form-label text-md-right">password</label>
+                                    <label for="password" class="col-md-4 col-form-label text-md-right">password</label>
                                     <div class="col-md-6">
-                                        <input type="text" id="phone_number" class="form-control">
+                                        <input type="text" id="password" class="form-control" name="password">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label for="present_address" class="col-md-4 col-form-label text-md-right">confirm password</label>
                                     <div class="col-md-6">
-                                        <input type="text" id="present_address" class="form-control">
+                                        <input type="text" id="password_confirmation" class="form-control" name="password_confirmation">
                                     </div>
                                 </div>
 

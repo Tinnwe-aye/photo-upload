@@ -1,0 +1,5 @@
+php artisan make:model Flight --migration
+
+ErrorException
+include(D:\photo-upload\vendor\composer/../../app/Models/UserTbl.php): failed to open stream: No such file or directory 
+Solution : run composer dump-autoload

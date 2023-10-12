@@ -30,6 +30,7 @@ class RegisterController extends Controller
         // $this->validator($request->all())->validate();
         // $this->create($request->all());
         // return redirect(RouteServiceProvider::HOME);
+        $imageData = '';
         try{
             $rules = [
                 'name' => ['required', 'string', 'max:255'],
@@ -47,15 +48,19 @@ class RegisterController extends Controller
             // validation
             $validator = Validator::make($request->all(), $rules);       
             if ($validator->fails()) {
-                // return redirect()->back()->withInput()->with('error', json_encode($validator->errors()->all()));
-                return redirect()->back()->withInput()->with('error', "Please Fill Required Field");
+                if ($request->hasFile('photo')) {
+                    $imageData = file_get_contents($request->file('photo')->getRealPath());
+                }
+                 return redirect()->back()->withInput()->with('old_image',base64_encode($imageData))->with('error', json_encode($validator->errors()->all()));
             }
 
              // validation
              $validator = Validator::make($request->all(), $rules1);       
              if ($validator->fails()) {
-                 // return redirect()->back()->withInput()->with('error', json_encode($validator->errors()->all()));
-                 return redirect()->back()->withInput()->with('error',"Not Same");
+                if ($request->hasFile('photo')) {
+                    $imageData = file_get_contents($request->file('photo')->getRealPath());
+                }
+                 return redirect()->back()->withInput()->with('old_image',base64_encode($imageData))->with('error', json_encode($validator->errors()->all()));
              }
 
             //Save data

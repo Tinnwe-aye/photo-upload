@@ -113,9 +113,13 @@
 
                                 <div class="form-group row">
                                     <label for="photo" class="col-md-4 col-form-label text-md-right">Photo</label>
-                                    <div class="col-md-6">
-                                        <input type="file"  accept="image/*" name="photo" id="file"  onchange="loadFile(event)" style="display: none;" value="{{ old('photo') }}">
-                                        <img id="output" width="200" />                                        
+                                    <div class="col-md-6"> 
+                                        @if (session('old_image'))
+                                        <img src="data:image/jpeg;base64,{{ session('old_image') }}" alt="Image" class="img-class" id="output" width="200">
+                                        @else                                            
+                                            <img id="output" width="200" />  
+                                        @endif 
+                                        <input type="file"  accept="image/*" name="photo" id="file"  onchange="loadFile(event)" style="display: none;">                                     
                                     </div>                                   
                                     <label for="file" style="cursor: pointer;height:40px;" class="btn btn-primary">Select Photo</label>
                                 </div>

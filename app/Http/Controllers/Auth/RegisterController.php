@@ -37,8 +37,10 @@ class RegisterController extends Controller
                 $file = $request->file('photo');
                 $filename = $file->getClientOriginalName();
                 $file->storeAs('images/',$filename);
+                # store image 
                 $storage_file = file(storage_path().'/app/images/'.$filename);
                 $path = public_path().'/images';
+                #move image
                 $file->move($path,$filename);
             } else {
                 $path = public_path().'/images';

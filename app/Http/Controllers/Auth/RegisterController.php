@@ -30,7 +30,20 @@ class RegisterController extends Controller
         // $this->validator($request->all())->validate();
         // $this->create($request->all());
         // return redirect(RouteServiceProvider::HOME);
-        $imageData = '';
+
+        if ($request->hasFile('photo')) {
+            $imageData = file_get_contents($request->file('photo')->getRealPath());
+            $file = $request->file('photo');
+            $filename = $file->getClientOriginalName();
+            $file->storeAs('images/',$filename);
+            $storage_file = file(storage_path().'/app/images/'.$filename);
+            $path = public_path().'/images';
+            $file->move($path,$filename);
+        } else {
+            $filename = basename($request->img_name);
+            $imageData = file_get_contents(storage_path().'/app/images/'.$filename);
+        }
+
         try{
             $rules = [
                 'name' => ['required', 'string', 'max:255'],
@@ -38,7 +51,8 @@ class RegisterController extends Controller
                 'username' => ['required', 'string', 'max:255', 'unique:user_tbls'],
                 'password' => ['required', 'string', 'min:8'],
                 'password_confirmation' => 'required',
-                'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:50', // Adjust the allowed file types and maximum size as needed.
+                'img_name' => 'required',
+                // 'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:50', // Adjust the allowed file types and maximum size as needed.
             ];
 
             $rules1 = [
@@ -48,26 +62,19 @@ class RegisterController extends Controller
             // validation
             $validator = Validator::make($request->all(), $rules);       
             if ($validator->fails()) {
-                if ($request->hasFile('photo')) {
-                    $imageData = file_get_contents($request->file('photo')->getRealPath());
-                }
-                 return redirect()->back()->withInput()->with('old_image',base64_encode($imageData))->with('error', json_encode($validator->errors()->all()));
+                 return redirect()->back()->withInput()->with('old_image',$filename)->with('error', json_encode($validator->errors()->all()));
             }
 
              // validation
              $validator = Validator::make($request->all(), $rules1);       
              if ($validator->fails()) {
-                if ($request->hasFile('photo')) {
-                    $imageData = file_get_contents($request->file('photo')->getRealPath());
-                }
-                 return redirect()->back()->withInput()->with('old_image',base64_encode($imageData))->with('error', json_encode($validator->errors()->all()));
+                 return redirect()->back()->withInput()->with('old_image',$filename)->with('error', json_encode($validator->errors()->all()));
              }
 
             //Save data
-            if ($request->hasFile('photo')) {
-                $imageData = file_get_contents($request->file('photo')->getRealPath());
+            if ($request->img_name) {
                 $photo = new user_tbl([
-                    'photo_name' => $request->file('photo')->getClientOriginalName(),
+                    'photo_name' => $filename,
                     'photo_data' => $imageData,
                     'name' => $request->name,
                     'email' => $request->email,
@@ -75,7 +82,6 @@ class RegisterController extends Controller
                     'password' => Hash::make($request->password),
                 ]);
                 $photo->save();
-
                 return redirect()->back()->with('success', 'Insert Data successfully.');
             }
             return redirect()->back()->withInput()->with('error', 'Failed to Save Data.');

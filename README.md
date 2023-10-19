@@ -68,6 +68,6 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 - **DB_DATABASE=**
 - **DB_USERNAME=**
-=**DB_PASSWORD=**
+- **DB_PASSWORD=**
 - **composer install**
 - **php artisan serve**

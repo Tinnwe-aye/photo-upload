@@ -31,6 +31,7 @@
         var loadFile = function(event) {
             var image = document.getElementById('output');
             image.src = URL.createObjectURL(event.target.files[0]);
+            document.getElementById('image_name').value = URL.createObjectURL(event.target.files[0]);
         };
     </script>
 
@@ -116,10 +117,12 @@
                                     <div class="col-md-6"> 
                                         @if (session('old_image'))
                                         <img src="{{asset('images/'. session('old_image'))}}" alt="Image" class="img-class" id="output" width="200"> 
+                                        <input type="hidden" id="image_name" name="image_name"  value="{{asset('images/'. session('old_image'))}}">
                                         @else                                            
                                             <img id="output" width="200" />  
+                                            <input type="hidden" id="image_name" name="image_name"  value="">
                                         @endif 
-                                        <input type="text" id="img_name" name="img_name"  value="{{asset('images/'. session('old_image'))}}">
+                                        
                                         <input type="file"  accept="image/*" name="photo" id="file"  onchange="loadFile(event)" style="display: none;">                                     
                                     </div>                                   
                                     <label for="file" style="cursor: pointer;height:40px;" class="btn btn-primary">Select Photo</label>

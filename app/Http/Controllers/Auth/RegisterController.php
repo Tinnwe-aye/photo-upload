@@ -30,18 +30,21 @@ class RegisterController extends Controller
         // $this->validator($request->all())->validate();
         // $this->create($request->all());
         // return redirect(RouteServiceProvider::HOME);
-
-        if ($request->hasFile('photo')) {
-            $imageData = file_get_contents($request->file('photo')->getRealPath());
-            $file = $request->file('photo');
-            $filename = $file->getClientOriginalName();
-            $file->storeAs('images/',$filename);
-            $storage_file = file(storage_path().'/app/images/'.$filename);
-            $path = public_path().'/images';
-            $file->move($path,$filename);
-        } else {
-            $filename = basename($request->img_name);
-            $imageData = file_get_contents(storage_path().'/app/images/'.$filename);
+        $filename = '';
+        if($request->image_name){
+            if ($request->hasFile('photo')) {
+                $imageData = file_get_contents($request->file('photo')->getRealPath());
+                $file = $request->file('photo');
+                $filename = $file->getClientOriginalName();
+                $file->storeAs('images/',$filename);
+                $storage_file = file(storage_path().'/app/images/'.$filename);
+                $path = public_path().'/images';
+                $file->move($path,$filename);
+            } else {
+                $path = public_path().'/images';
+                $filename = basename($request->image_name);
+                $imageData = file_get_contents(storage_path().'/app/images/'.$filename);
+            }
         }
 
         try{
@@ -51,7 +54,7 @@ class RegisterController extends Controller
                 'username' => ['required', 'string', 'max:255', 'unique:user_tbls'],
                 'password' => ['required', 'string', 'min:8'],
                 'password_confirmation' => 'required',
-                'img_name' => 'required',
+                'image_name' => 'required',
                 // 'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:50', // Adjust the allowed file types and maximum size as needed.
             ];
 
@@ -72,7 +75,7 @@ class RegisterController extends Controller
              }
 
             //Save data
-            if ($request->img_name) {
+            if ($request->image_name) {
                 $photo = new user_tbl([
                     'photo_name' => $filename,
                     'photo_data' => $imageData,
@@ -82,6 +85,11 @@ class RegisterController extends Controller
                     'password' => Hash::make($request->password),
                 ]);
                 $photo->save();
+
+                log::info($path.'/'.$filename);
+                if(file_exists($path.'/'.$filename)){
+                    unlink($path.'/'.$filename);
+                  }
                 return redirect()->back()->with('success', 'Insert Data successfully.');
             }
             return redirect()->back()->withInput()->with('error', 'Failed to Save Data.');
